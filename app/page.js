@@ -91,7 +91,7 @@ export default function Home() {
                   <img
                     src={slide.img}
                     alt="slide"
-                    className="gallery-img rounded-3xl shadow-2xl object-cover w-[340px] h-[320px] md:w-[520px] md:h-[480px] bg-[#232143] transition-all duration-500 border-4 border-[#2d2956] hover:scale-105 hover:shadow-3xl"
+                    className="gallery-img rounded-3xl shadow-2xl object-contain w-[340px] h-[320px] md:w-[520px] md:h-[480px] bg-[#232143] transition-all duration-500 border-4 border-[#2d2956] hover:scale-105 hover:shadow-3xl"
                   />
                 </div>
               </SwiperSlide>
