@@ -1,9 +1,10 @@
 'use client'
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Controller, Autoplay, EffectFade } from 'swiper/modules';
+import { Navigation, Controller, Autoplay, EffectFade, EffectCoverflow } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/effect-fade';
+import 'swiper/css/effect-coverflow';
 import { useState, useEffect, useRef } from 'react';
 
 const slides = [
@@ -58,76 +59,17 @@ const slides = [
 const FLOWER_EMOJI = '🌸';
 const FLOWER_COUNT = 8;
 
-function FlowerRain() {
-  const [flowers, setFlowers] = useState([]);
-  const containerRef = useRef();
-
-  useEffect(() => {
-    // Khởi tạo hoa với vị trí và tốc độ random
-    const genFlowers = () => Array.from({ length: FLOWER_COUNT }).map((_, i) => ({
-      id: i + '-' + Math.random(),
-      left: Math.random() * 100, // %
-      size: 24 + Math.random() * 24, // px
-      duration: 10 + Math.random() * 8, // s (10-18s)
-      delay: Math.random() * 8, // s (0-8s)
-      rotate: Math.random() * 360,
-      opacity: 0.7 + Math.random() * 0.3,
-    }));
-    setFlowers(genFlowers());
-    // Lặp lại hiệu ứng hoa rơi
-    const interval = setInterval(() => setFlowers(genFlowers()), 16000);
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <div ref={containerRef} className="pointer-events-none fixed inset-0 z-50 w-full h-full overflow-hidden select-none">
-      {flowers.map(flower => (
-        <span
-          key={flower.id}
-          style={{
-            left: `${flower.left}%`,
-            fontSize: `${flower.size}px`,
-            animation: `flower-fall ${flower.duration}s linear ${flower.delay}s infinite`,
-            transform: `rotate(${flower.rotate}deg)`
-          }}
-          className="absolute top-[-10%] opacity-80"
-        >
-          {FLOWER_EMOJI}
-        </span>
-      ))}
-      <style>{`
-        @keyframes flower-fall {
-          0% {
-            top: -10%;
-            opacity: 0.8;
-            filter: blur(0px);
-          }
-          80% {
-            filter: blur(1.5px);
-            opacity: 0.8;
-          }
-          100% {
-            top: 110%;
-            opacity: 0.2;
-            filter: blur(2px);
-          }
-        }
-      `}</style>
-    </div>
-  );
-}
-
 export default function Home() {
   const [mainSwiper, setMainSwiper] = useState(null);
   const [navSwiper, setNavSwiper] = useState(null);
 
   return (
-    <>
-      <FlowerRain />
-      <div className="flex w-full h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 items-center justify-center p-2 sm:p-4">
-        <div className="w-full h-[92vh] flex shadow-2xl rounded-2xl overflow-hidden">
+    <div className="min-h-screen flex flex-col justify-between  overflow-hidden bg-gradient-to-br from-[#232143] via-[#2d2956] to-[#232143] px-2 md:px-0 py-10">
+      {/* Swiper Section */}
+      <main className="flex flex-1 items-center justify-center">
+        <div className="w-full max-w-6xl mx-auto">
           <Swiper
-            modules={[Navigation, Controller, Autoplay, EffectFade]}
+            modules={[Navigation, Controller, Autoplay]}
             onSwiper={setMainSwiper}
             controller={{ control: navSwiper }}
             navigation={{
@@ -135,52 +77,59 @@ export default function Home() {
               prevEl: '.swiper-button-prev',
             }}
             loop
-            speed={1200}
+            speed={800}
             autoplay={{ delay: 3500, disableOnInteraction: false }}
-            effect="fade"
-            fadeEffect={{ crossFade: true }}
-            className="w-[75vw] h-full relative"
+            centeredSlides
+            slidesPerView={2}
+            spaceBetween={-60}
+            className="relative custom-gallery-swiper"
+            style={{overflow: 'visible'}}
           >
             {slides.map((slide, idx) => (
               <SwiperSlide key={idx}>
-                <img
-                  src={slide.img}
-                  alt="slide"
-                  className="w-full h-full object-contain object-center rounded-l-2xl transition-all duration-700 ease-in-out"
-                />
+                <div className="flex items-center justify-center h-[320px] md:h-[480px]">
+                  <img
+                    src={slide.img}
+                    alt="slide"
+                    className="gallery-img rounded-3xl shadow-2xl object-cover w-[340px] h-[320px] md:w-[520px] md:h-[480px] bg-[#232143] transition-all duration-500 border-4 border-[#2d2956] hover:scale-105 hover:shadow-3xl"
+                  />
+                </div>
               </SwiperSlide>
             ))}
-            <div className="select-none swiper-button-prev !text-white !bg-black/40 !rounded-full !w-12 !h-12 !flex !items-center !justify-center !shadow-lg hover:!bg-white/80 hover:!text-black transition absolute top-1/2 -translate-y-1/2 left-4 z-20" />
-            <div className="select-none swiper-button-next !text-white !bg-black/40 !rounded-full !w-12 !h-12 !flex !items-center !justify-center !shadow-lg hover:!bg-white/80 hover:!text-black transition absolute top-1/2 -translate-y-1/2 right-4 z-20" />
           </Swiper>
-          <div className="w-[25vw] h-full flex flex-col items-center justify-center bg-black/40 rounded-r-2xl">
-            <Swiper
-              modules={[Controller]}
-              onSwiper={setNavSwiper}
-              controller={{ control: mainSwiper }}
-              direction="vertical"
-              slidesPerView={4}
-              spaceBetween={32}
-              centeredSlides
-              slideToClickedSlide
-              className="h-[92%] w-full"
-              style={{ minWidth: 180 }}
-            >
-              {slides.map((slide, idx) => (
-                <SwiperSlide key={idx}>
-                  <div className="w-full flex items-center justify-center">
-                    <img
-                      src={slide.img}
-                      alt="slide nav"
-                      className="w-32 h-32 rounded-3xl object-cover object-center shadow-2xl border-4 border-white transition-all duration-500 ease-in-out group-hover:scale-110 group-hover:border-yellow-400 cursor-pointer"
-                    />
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
         </div>
-      </div>
-    </>
+      </main>
+      {/* Footer */}
+      <footer className="mt-10 text-center text-[#bdb9e1] text-sm opacity-80">
+        &copy; {new Date().getFullYear()} Movie Gallery by YourName. All rights reserved.
+      </footer>
+      <style jsx global>{`
+        .custom-gallery-swiper .swiper-slide {
+          filter: blur(0px);
+          opacity: 1;
+          transition: transform 0.5s, opacity 0.5s;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        .custom-gallery-swiper .swiper-slide-active {
+          transform: scale(1.7);
+          z-index: 10;
+          opacity: 1;
+          box-shadow: 0 16px 64px 0 rgba(0,0,0,0.65);
+        }
+        .custom-gallery-swiper .swiper-slide-next,
+        .custom-gallery-swiper .swiper-slide-prev {
+          opacity: 0.5;
+          transform: scale(0.7);
+        }
+        .custom-gallery-swiper .swiper-slide {
+          overflow: visible;
+        }
+        .custom-gallery-swiper {
+          overflow: visible !important;
+        }
+      `}</style>
+    </div>
   );
 }
