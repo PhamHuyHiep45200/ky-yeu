@@ -84,13 +84,13 @@ export default function Home() {
               <span className="text-6xl md:text-7xl text-indigo-500 mb-4 drop-shadow-lg">🏠</span>
               <img src="/0E8A5401.jpeg" alt="Welcome" className="w-[500px] h-64 object-cover rounded-3xl shadow-2xl border-4 border-white mb-8" />
               <h2 className="text-3xl md:text-4xl font-extrabold text-gray-800 mb-6 text-center drop-shadow">
-                Chào mừng bạn đến với <span className="text-pink-500">Ngôi nhà Mickey 2</span>
+                <span className="text-pink-500">Cùng nhìn lại khoảnh khắc đáng yêu của chúng mình nhé</span>
               </h2>
               <button
                 onClick={handleOk}
                 className="px-12 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-pink-500 text-white text-2xl font-bold shadow-lg hover:scale-105 transition mt-2"
               >
-                OKE
+                GO!
               </button>
             </div>
           </div>
